@@ -48,6 +48,8 @@ namespace YARG.Core.Engine
 
         protected readonly SyncTrack SyncTrack;
 
+        protected readonly SongChart FullChart;
+
         protected readonly uint Resolution;
 
         public readonly uint TicksPerQuarterSpBar;
@@ -127,7 +129,7 @@ namespace YARG.Core.Engine
 
         protected SyncTrackChange CurrentSyncTrackState => SyncTrackChanges[CurrentSyncIndex];
 
-        protected BaseEngine(SyncTrack syncTrack, bool isChordSeparate, bool isBot)
+        protected BaseEngine(SyncTrack syncTrack, bool isChordSeparate, bool isBot,SongChart FullChart)
         {
             SyncTrack = syncTrack;
             Resolution = syncTrack.Resolution;

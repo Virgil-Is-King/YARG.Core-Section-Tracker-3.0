@@ -42,16 +42,22 @@ namespace YARG.Core.Engine.Guitar
         protected double FrontEndExpireTime;
 
         protected GuitarEngine(InstrumentDifficulty<GuitarNote> chart, SyncTrack syncTrack,
-            GuitarEngineParameters engineParameters, bool isBot)
-            : base(chart, syncTrack, engineParameters, false, isBot)
+            GuitarEngineParameters engineParameters, bool isBot, SongChart FullChart)
+            : base(chart, syncTrack, engineParameters, false, isBot, FullChart)
         {
             StrumLeniencyTimer = new EngineTimer(engineParameters.StrumLeniency);
             HopoLeniencyTimer = new EngineTimer(engineParameters.HopoLeniency);
             StarPowerWhammyTimer = new EngineTimer(engineParameters.StarPowerWhammyBuffer);
 
             GetWaitCountdowns(Notes);
-        }
 
+
+            foreach (var note in Notes)
+            {
+                EngineStats.EnhancedFiveFretStats.TotalNoteStats.CountNotesInSong(note);
+            }
+        }
+        
         public EngineTimer GetHopoLeniencyTimer() => HopoLeniencyTimer;
         public EngineTimer GetStrumLeniencyTimer() => StrumLeniencyTimer;
         public double GetFrontEndExpireTime() => FrontEndExpireTime;
@@ -249,6 +255,9 @@ namespace YARG.Core.Engine.Guitar
 
             WasNoteGhosted = false;
 
+            EngineStats.EnhancedFiveFretStats.NoteHitStats.CountNotesInSong(note);
+            //EngineStats.SectionStatsTracker.SectionStatsArray[CurrentSectionIndex].TotalNotesHitInSection.CountNotesInSong(note);
+
             OnNoteHit?.Invoke(NoteIndex, note);
             base.HitNote(note);
         }
@@ -283,6 +292,10 @@ namespace YARG.Core.Engine.Guitar
             ResetCombo();
 
             UpdateMultiplier();
+
+            EngineStats.EnhancedFiveFretStats.NoteMissStats.CountNotesInSong(note);
+            //EngineStats.SectionStatsTracker.SectionStatsArray[CurrentSectionIndex].TotalNotesMissedInSection.CountNotesInSong(note);
+
 
             OnNoteMissed?.Invoke(NoteIndex, note);
             base.MissNote(note);
